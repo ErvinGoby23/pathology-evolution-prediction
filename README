@@ -13,13 +13,9 @@ Le projet comprend :
 * Une API FastAPI pour exploiter le modèle
 * Un déploiement via Docker
 
-
-
 ## Problématique 
 
 Comment prédire l’évolution des maladies (pathologie niveau 1) en fonction des régions afin d’anticiper les besoins en santé publique ?
-
-
 
 ## Dataset utilisé
 
@@ -56,8 +52,6 @@ model/
     kmeans.pkl
 ```
 
-
-
 ## Meilleur modèle
 
 Le Random Forest Regressor est retenu :
@@ -66,16 +60,12 @@ Le Random Forest Regressor est retenu :
 * RMSE le plus faible
 * Bonne capacité à modéliser des relations non linéaires
 
-
-
 ## Lancer le projet avec Docker
 
 ### 1 Prérequis
 
 * Docker installé
 * Docker Desktop lancé
-
-
 
 ### 2 Construire l’image Docker
 
@@ -85,23 +75,17 @@ Dans le dossier racine du projet :
 docker build -t pathology-api .
 ```
 
-
-
 ### 3 Lancer le conteneur
 
 ```bash
 docker run -p 8000:8000 pathology-api
 ```
 
-
-
 ### 4 Accéder à l’API (voir screens pdf)
 
 Swagger UI :
 
 [http://localhost:8000/docs](http://localhost:8000/docs)
-
-
 
 ## Exemple d’appel API
 
@@ -114,9 +98,6 @@ POST /predict/random_forest
   "patho_niv1": "Cancers"
 }
 ```
-
-
-
 ## Exemple de Dockerfile (voir screens pdf)
 
 ```FROM python:3.11-slim
@@ -133,7 +114,6 @@ EXPOSE 8000
 
 CMD ["python", "-m", "uvicorn", "api.app:app", "--host", "0.0.0.0", "--port", "8000"]
 ```
-
 
 ##  Comparaison globale : Supervisé vs Non Supervisé
 
