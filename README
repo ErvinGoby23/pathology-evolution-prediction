@@ -28,7 +28,7 @@ Comment prédire l’évolution des maladies (pathologie niveau 1) en fonction d
 Données issues de data.gouv.fr
 
 Lien du dataset :
-[https://www.data.gouv.fr/datasets/pathologies-effectif-de-patients-par-pathologie-sexe-classe-dage-et-territoire-departement-region](https://www.data.gouv.fr/datasets/pathologies-effectif-de-patients-par-pathologie-sexe-classe-dage-et-territoire-departement-region)
+https://www.data.gouv.fr/datasets/pathologies-effectif-de-patients-par-pathologie-sexe-classe-dage-et-territoire-departement-region](https://www.data.gouv.fr/datasets/pathologies-effectif-de-patients-par-pathologie-sexe-classe-dage-et-territoire-departement-region)
 
 Fichier utilisé : `effectifs.csv`
 
