@@ -1,0 +1,166 @@
+# Data science avec python: prédiction de pathologies
+
+## Description du projet
+
+Ce projet a pour objectif de prédire l’évolution des pathologies (niveau 1) en fonction de l’année et de la région en France.
+
+Le projet comprend :
+
+* Une analyse exploratoire des données (EDA)
+* Une partie non supervisée (KMeans) pour segmenter les régions/pathologies
+* Une partie supervisée pour prédire le nombre de cas
+* La sauvegarde des modèles au format `.pkl`
+* Une API FastAPI pour exploiter le modèle
+* Un déploiement via Docker
+
+
+
+## Problématique 
+
+Comment prédire l’évolution des maladies (pathologie niveau 1) en fonction des régions afin d’anticiper les besoins en santé publique ?
+
+
+
+## Dataset utilisé
+
+### Source
+
+Données issues de data.gouv.fr
+
+Lien du dataset :
+[https://www.data.gouv.fr/datasets/pathologies-effectif-de-patients-par-pathologie-sexe-classe-dage-et-territoire-departement-region](https://www.data.gouv.fr/datasets/pathologies-effectif-de-patients-par-pathologie-sexe-classe-dage-et-territoire-departement-region)
+
+Fichier utilisé : `effectifs.csv`
+
+##  Modèles utilisés
+
+###  Non supervisé
+
+* KMeans (clustering)
+* Évaluation avec Silhouette Score
+* Visualisation via PCA
+
+###  Supervisé
+
+* Régression Linéaire
+* Random Forest Regressor (meilleur modèle)
+* Gradient Boosting Regressor
+
+Les modèles sont sauvegardés dans le dossier :
+
+```
+model/
+    linear.pkl
+    random_forest.pkl
+    gradient_boosting.pkl
+    kmeans.pkl
+```
+
+
+
+## Meilleur modèle
+
+Le Random Forest Regressor est retenu :
+
+* R² le plus élevé
+* RMSE le plus faible
+* Bonne capacité à modéliser des relations non linéaires
+
+
+
+## Lancer le projet avec Docker
+
+### 1 Prérequis
+
+* Docker installé
+* Docker Desktop lancé
+
+
+
+### 2 Construire l’image Docker
+
+Dans le dossier racine du projet :
+
+```bash
+docker build -t pathology-api .
+```
+
+
+
+### 3 Lancer le conteneur
+
+```bash
+docker run -p 8000:8000 pathology-api
+```
+
+
+
+### 4 Accéder à l’API (voir screens pdf)
+
+Swagger UI :
+
+[http://localhost:8000/docs](http://localhost:8000/docs)
+
+
+
+## Exemple d’appel API
+
+```json
+POST /predict/random_forest
+
+{
+  "annee": 2027,
+  "region": 11,
+  "patho_niv1": "Cancers"
+}
+```
+
+
+
+## Exemple de Dockerfile (voir screens pdf)
+
+```FROM python:3.11-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+EXPOSE 8000
+
+CMD ["python", "-m", "uvicorn", "api.app:app", "--host", "0.0.0.0", "--port", "8000"]
+```
+
+
+##  Comparaison globale : Supervisé vs Non Supervisé
+
+Dans ce projet, deux approches ont été explorées :
+
+Apprentissage non supervisé (KMeans)
+Le modèle KMeans a permis de regrouper les régions et pathologies selon des profils similaires. Cette approche est utile pour :
+- Identifier des groupes de régions ayant des comportements proches
+- Mettre en évidence des structures cachées dans les données
+- Segmenter les territoires selon leur intensité pathologique
+
+Cependant :
+- Le clustering ne permet pas de prédire une valeur future
+- Les clusters supposent des formes simples (souvent sphériques)
+- Les résultats dépendent du choix du nombre de clusters
+Le non supervisé est donc pertinent pour l’analyse exploratoire et la segmentation, mais pas pour la prédiction temporelle.
+
+Apprentissage supervisé
+Les modèles supervisés (Régression Linéaire, Random Forest, Gradient Boosting) permettent de prédire l’évolution du nombre de cas en fonction de l’année, de la région et de la pathologie.
+
+La comparaison a montré que :
+- La Régression Linéaire est limitée pour capturer la complexité des données
+- Random Forest et Gradient Boosting obtiennent des performances nettement supérieures
+- Random Forest est le modèle le plus stable et performant dans notre cas
+
+Le supervisé est donc adapté à la problématique métier car il permet de faire des prédictions exploitables.
+
+## Auteur
+
+Ervin GOBY et Rayan TOUMERT  

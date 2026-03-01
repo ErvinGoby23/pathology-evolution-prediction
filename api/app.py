@@ -12,12 +12,20 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 linear_model = joblib.load(os.path.join(BASE_DIR, "model", "linear.pkl"))
 rf_model = joblib.load(os.path.join(BASE_DIR, "model", "random_forest.pkl"))
 gb_model = joblib.load(os.path.join(BASE_DIR, "model", "gradient_boosting.pkl"))
+kmeans_model = joblib.load(os.path.join(BASE_DIR, "model", "kmeans.pkl"))
 
 
 class PathologyFeatures(BaseModel):
     annee: int
     region: int
     patho_niv1: str
+
+class ClusterFeatures(BaseModel):
+    annee: int
+    region: int
+    Ntop: float
+    prev: float
+
 
 
 @app.post("/predict/linear")
@@ -56,6 +64,18 @@ def predict_gb(payload: PathologyFeatures):
         "model": "Gradient Boosting",
         "log_Ntop": float(pred_log),
         "predicted_Ntop": float(pred_ntop)
+    }
+
+
+
+@app.post("/predict/cluster")
+def predict_cluster(payload: ClusterFeatures):
+    X = pd.DataFrame([payload.model_dump()])
+    cluster = kmeans_model.predict(X)[0]
+
+    return {
+        "model": "KMeans Clustering",
+        "assigned_cluster": int(cluster)
     }
 
 
